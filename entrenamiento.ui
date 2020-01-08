@@ -6,240 +6,482 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>957</width>
-    <height>873</height>
+    <width>942</width>
+    <height>923</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Proyecto de  Computación 1</string>
   </property>
-  <widget class="QLabel" name="milabel">
+  <widget class="QTabWidget" name="tabWidget">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>0</y>
-     <width>181</width>
-     <height>31</height>
+     <x>0</x>
+     <y>10</y>
+     <width>941</width>
+     <height>911</height>
     </rect>
    </property>
-   <property name="font">
-    <font>
-     <family>Segoe UI</family>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
+   <property name="currentIndex">
+    <number>1</number>
    </property>
-   <property name="autoFillBackground">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Fichero de entrenamiento</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="excel_cargar_button">
-   <property name="geometry">
-    <rect>
-     <x>300</x>
-     <y>40</y>
-     <width>75</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>cargar excel</string>
-   </property>
-  </widget>
-  <widget class="QTableView" name="mitableView">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>290</y>
-     <width>911</width>
-     <height>191</height>
-    </rect>
-   </property>
-   <property name="gridStyle">
-    <enum>Qt::DashLine</enum>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_Info">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>90</y>
-     <width>371</width>
-     <height>141</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Segoe UI</family>
-     <pointsize>14</pointsize>
-    </font>
-   </property>
-   <property name="frameShape">
-    <enum>QFrame::Box</enum>
-   </property>
-   <property name="text">
-    <string>Informacion de dataframe</string>
-   </property>
-   <property name="margin">
-    <number>0</number>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="fichEntrenamiento_txt">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>40</y>
-     <width>281</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="focusPolicy">
-    <enum>Qt::NoFocus</enum>
-   </property>
-   <property name="text">
-    <string>fichero de carga</string>
-   </property>
-   <property name="readOnly">
-    <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QLabel" name="milabel_2">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>240</y>
-     <width>501</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Segoe UI</family>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="autoFillBackground">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Previsualización carga de datos para entrenamiento</string>
-   </property>
-  </widget>
-  <widget class="QRadioButton" name="rd_Algor_RL">
-   <property name="geometry">
-    <rect>
-     <x>120</x>
-     <y>530</y>
-     <width>281</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Segoe UI</family>
-     <pointsize>11</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Logistic regression</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="milabel_3">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>490</y>
-     <width>501</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Segoe UI</family>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="autoFillBackground">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Selección de algoritmo de entrenamiento</string>
-   </property>
-  </widget>
-  <widget class="QRadioButton" name="rd_Algor_KNN">
-   <property name="geometry">
-    <rect>
-     <x>120</x>
-     <y>610</y>
-     <width>281</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Segoe UI</family>
-     <pointsize>11</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>KNN - K nearest neighbor</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="entrenar_button">
-   <property name="geometry">
-    <rect>
-     <x>440</x>
-     <y>570</y>
-     <width>151</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Lanzar Entrenamiento</string>
-   </property>
-  </widget>
-  <widget class="QRadioButton" name="rd_Algor_SVM">
-   <property name="geometry">
-    <rect>
-     <x>120</x>
-     <y>570</y>
-     <width>281</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Segoe UI</family>
-     <pointsize>11</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>SVM - support vectors machine</string>
-   </property>
-  </widget>
-  <widget class="QTableView" name="mitableView_resultados">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>660</y>
-     <width>911</width>
-     <height>191</height>
-    </rect>
-   </property>
-   <property name="gridStyle">
-    <enum>Qt::DashLine</enum>
-   </property>
+   <widget class="QWidget" name="tabEntrenamiento">
+    <attribute name="title">
+     <string>Entrenamiento</string>
+    </attribute>
+    <widget class="QTableView" name="mitableView_resultados">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>680</y>
+       <width>911</width>
+       <height>191</height>
+      </rect>
+     </property>
+     <property name="gridStyle">
+      <enum>Qt::DashLine</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="milabel_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>250</y>
+       <width>501</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>Previsualización carga de datos para entrenamiento</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="fichEntrenamiento_txt">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>281</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string>fichero de carga</string>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="excel_cargar_button">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>50</y>
+       <width>75</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>cargar excel</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="rd_Algor_RL">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>540</y>
+       <width>281</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Logistic regression</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="rd_Algor_SVM">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>580</y>
+       <width>281</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>SVM - support vectors machine</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="milabel_3">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>500</y>
+       <width>501</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>Selección de algoritmo de entrenamiento</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="rd_Algor_KNN">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>620</y>
+       <width>281</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>KNN - K nearest neighbor</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_Info">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>100</y>
+       <width>371</width>
+       <height>141</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>14</pointsize>
+       <kerning>true</kerning>
+      </font>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Box</enum>
+     </property>
+     <property name="text">
+      <string>Informacion de dataframe</string>
+     </property>
+     <property name="margin">
+      <number>0</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="milabel">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>181</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>Fichero de entrenamiento</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="entrenar_button">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>580</y>
+       <width>151</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Lanzar Entrenamiento</string>
+     </property>
+    </widget>
+    <widget class="QTableView" name="mitableView">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>300</y>
+       <width>911</width>
+       <height>191</height>
+      </rect>
+     </property>
+     <property name="gridStyle">
+      <enum>Qt::DashLine</enum>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tabPrediccion">
+    <attribute name="title">
+     <string>Prediccion</string>
+    </attribute>
+    <widget class="QTableWidget" name="tableWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>590</y>
+       <width>911</width>
+       <height>291</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>230</y>
+       <width>911</width>
+       <height>241</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>20</pointsize>
+      </font>
+     </property>
+     <property name="title">
+      <string>Datos del modelo</string>
+     </property>
+     <widget class="QLabel" name="qLDatosModelo">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>50</y>
+        <width>741</width>
+        <height>181</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Arial</family>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;justify&quot;&gt;Ejemplo de uso: ejemplo de uso&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;Ejemplo de uso: ejemplo de uso&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;Ejemplo de uso: ejemplo de uso&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;Ejemplo de uso: ejemplo de uso&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;Ejemplo de uso: ejemplo de uso&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;Ejemplo de uso: ejemplo de uso&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QLabel" name="qLFichero">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>181</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>Fichero a clasificar</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="qLEFicheroAClasificar">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>281</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="qPBSelectFicheroAClasificar">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>60</y>
+       <width>75</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Examinar..</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="qLEModelo">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>160</y>
+       <width>281</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="qLModelo">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>110</y>
+       <width>181</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>Modelo</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="qPBSeleccionarModelo">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>160</y>
+       <width>75</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Examinar..</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="qPBPredecir">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>490</y>
+       <width>201</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Predecir</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="qLPrediccion">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>550</y>
+       <width>201</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>Visualización de la predicción</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="qPBExportar">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>550</y>
+       <width>75</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Exportar</string>
+     </property>
+    </widget>
+   </widget>
   </widget>
  </widget>
  <resources/>
