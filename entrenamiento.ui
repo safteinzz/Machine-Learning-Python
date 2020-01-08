@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tabEntrenamiento">
     <attribute name="title">
@@ -82,7 +82,7 @@
       <enum>Qt::NoFocus</enum>
      </property>
      <property name="text">
-      <string>fichero de carga</string>
+      <string/>
      </property>
      <property name="readOnly">
       <bool>true</bool>
@@ -104,8 +104,8 @@
     <widget class="QRadioButton" name="rd_Algor_RL">
      <property name="geometry">
       <rect>
-       <x>110</x>
-       <y>540</y>
+       <x>100</x>
+       <y>520</y>
        <width>281</width>
        <height>31</height>
       </rect>
@@ -123,8 +123,8 @@
     <widget class="QRadioButton" name="rd_Algor_SVM">
      <property name="geometry">
       <rect>
-       <x>110</x>
-       <y>580</y>
+       <x>100</x>
+       <y>560</y>
        <width>281</width>
        <height>31</height>
       </rect>
@@ -142,8 +142,8 @@
     <widget class="QLabel" name="milabel_3">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>500</y>
+       <x>10</x>
+       <y>480</y>
        <width>501</width>
        <height>31</height>
       </rect>
@@ -166,8 +166,8 @@
     <widget class="QRadioButton" name="rd_Algor_KNN">
      <property name="geometry">
       <rect>
-       <x>110</x>
-       <y>620</y>
+       <x>100</x>
+       <y>600</y>
        <width>281</width>
        <height>31</height>
       </rect>
@@ -235,8 +235,8 @@
     <widget class="QPushButton" name="entrenar_button">
      <property name="geometry">
       <rect>
-       <x>430</x>
-       <y>580</y>
+       <x>420</x>
+       <y>560</y>
        <width>151</width>
        <height>31</height>
       </rect>
@@ -251,11 +251,48 @@
        <x>10</x>
        <y>300</y>
        <width>911</width>
-       <height>191</height>
+       <height>161</height>
       </rect>
      </property>
      <property name="gridStyle">
       <enum>Qt::DashLine</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="qLVisualizacionEntrenamiento">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>640</y>
+       <width>201</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>Visualización de entrenamiento</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="qPBExportarModelo">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>640</y>
+       <width>151</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Exportar modelo</string>
      </property>
     </widget>
    </widget>

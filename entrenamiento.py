@@ -21,6 +21,10 @@ from PyQt5 import uic
 # => para alerts
 import ctypes  # An included library with Python install.
 
+# Seleccionar archivos
+from PyQt5.QtWidgets import QFileDialog
+
+
 # => algoritmos
 ## partidor datos Train VS test
 from sklearn.model_selection import train_test_split
@@ -46,37 +50,85 @@ class MyApp(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)        
         
+        # EVENTOS
         # Cargar datos excel
-        self.ui.excel_cargar_button.clicked.connect(self.Cargadatos_Entrenar)
+        self.ui.excel_cargar_button.clicked.connect(self.Cargadatos_Entrenar)   
         
         # Lanzar entrenamiento según radiobutton
-        self.ui.entrenar_button.clicked.connect(self.Lanzar_Entrenamiento)        
+        self.ui.entrenar_button.clicked.connect(self.Lanzar_Entrenamiento)         
+              
+        # Guardar modelo
+        #self.ui.qPBExportarModelo.clicked.connect()  
+        
+        # Seleccionar fichero a predecir
+        self.ui.qPBSelectFicheroAClasificar.clicked.connect(self.cargarDatos_Clasificar)  
+        
+        # Seleccionar modelo
+        self.ui.qPBSeleccionarModelo.clicked.connect(self.cargarModelo)
+        
+        # Predecir
+        #self.ui.qPBPredecir.clicked.connect()  
+        
+        # Exportar predicciones a excel
+        self.ui.qPBExportar.clicked.connect(self.guardarDatos)  
+      
+
+        
+    ##
+    # Seleccionar fichero
+    ##  
+    def seleccionarFichero(self, filtro):
+        qFD = QFileDialog()        
+        return QFileDialog.getOpenFileName(qFD,"Seleccionar archivo", "",filtro)
+    
+    
+    ##
+    # Carga el modelo
+    ##
+    def cargarModelo(self):
+        archivo = self.seleccionarFichero()[0]
+        if archivo:
+            self.ui.qLEModelo.setText(archivo)
+      
+    ##
+    # Guardar datos clasificados
+    ##
+    def guardarDatos(self):
+        print('Por hacer')
+        #Pedir al usuario que tipo quiere guardar csv o excel
+        #Pedir al usuario en que carpeta quiere guardarlo
+        #Hacer un if para que ver que ha elegido el user
+        #df_clasificado.to_csv(rutaElegida)
+        #df_clasificado.to_excel?(rutaElegida)
+        
+    ##
+    # Carga el excel a predecir
+    ##
+    def cargarDatos_Clasificar(self):
+#        print (self.seleccionarFichero("xls(*.xls);;csv(*.csv)"))
+        archivo = self.seleccionarFichero("xls(*.xls);;csv(*.csv)")[0]
+        if archivo:
+            self.ui.qLEFicheroAClasificar.setText(archivo)
+        
 
     ##
     # Carga del dataset de entrenamiento => dataframe
     ##
-    def Cargadatos_Entrenar( self ):
-        
-        """
-        #dialogo selector de fichero        
-        options = QtWidgets.QFileDialog.Options()
-        options |= QtWidgets.QFileDialog.DontUseNativeDialog
-        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(
-                        None,
-                        "QFileDialog.getOpenFileName()",
-                        "",
-                        "All Files (*);;Python Files (*.py)",
-                        options=options)
-        """
-        fileName='dataset_TRAIN.xls'
-        
+    def Cargadatos_Entrenar( self ):      
+        ficheroSeleccionado = self.seleccionarFichero("xls(*.xls);;csv(*.csv)")
+        fileName = ficheroSeleccionado[0]
         if not fileName:
-            Messagebox('No existe el fichero de carga '+fileName, 'Cargadatos_Entrenar', 1)        
-            return        
+            Messagebox('Por favor, seleccione un fichero de entrenamiento', 'Error', 1)        
+            return 
         
-        self.ui.fichEntrenamiento_txt.setText(fileName)            
+        self.ui.fichEntrenamiento_txt.setText(fileName)           
         
-        df_entrenar = pd.read_excel (fileName) #cargamos en dataframe
+        #Leer excel si se elegio formato excel
+        if ficheroSeleccionado[1] == 'xls(*.xls)':
+            df_entrenar = pd.read_excel (fileName)
+        #Leer csv si se eligio formato csv
+        else:                
+            df_entrenar = pd.read_csv (fileName)
         
         ############## consola
         
@@ -151,7 +203,7 @@ class MyApp(QMainWindow):
         
         # chequeamos que hemos seleccionado una opción => valorar combobox        
         if not self.ui.rd_Algor_RL.isChecked() and not self.ui.rd_Algor_SVM.isChecked() and not self.ui.rd_Algor_KNN.isChecked():                    
-            Messagebox('No ha seleccionado ningún algoritmo', 'Lanzar_Entrenamiento', 1)
+            Messagebox('No ha seleccionado ningún algoritmo', 'Error', 1)
             return
                                 
         ### Entrenamiento        
@@ -162,7 +214,6 @@ class MyApp(QMainWindow):
         # Separamos columna con la info de salida_retrasada                        
         X =  np.array(df_entrenar.drop(['salida_retrasada'], 1)) # variables del modelo        
         Y =  np.array(df_entrenar['salida_retrasada']) # resultado
-        
         # separamos datos en entrenamiento y prueba para testear algoritmos
         X_Train, X_Test, Y_Train, Y_Test = train_test_split(X, Y, test_size=0.2)
         
