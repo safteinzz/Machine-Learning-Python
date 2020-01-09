@@ -61,7 +61,7 @@ class MyApp(QMainWindow):
         self.ui.entrenar_button.clicked.connect(self.Lanzar_Entrenamiento)         
               
         # Guardar modelo
-        #self.ui.qPBExportarModelo.clicked.connect()  
+        self.ui.qPBExportarModelo.clicked.connect(self.exportarModelo)  
         
         # Seleccionar fichero a predecir
         self.ui.qPBSelectFicheroAClasificar.clicked.connect(self.cargarDatos_Clasificar)  
@@ -70,11 +70,15 @@ class MyApp(QMainWindow):
         self.ui.qPBSeleccionarModelo.clicked.connect(self.cargarModelo)
         
         # Predecir
-        #self.ui.qPBPredecir.clicked.connect()  
+        self.ui.qPBPredecir.clicked.connect(self.predecirDataFrame)  
         
         # Exportar predicciones a excel
         self.ui.qPBExportar.clicked.connect(self.guardarDatos)  
       
+        
+        
+    
+        
     def encryptar(self, textoEncryptar):
         return str(int.from_bytes(textoEncryptar.encode('utf-8'), byteorder='big'))
     
@@ -123,7 +127,6 @@ class MyApp(QMainWindow):
             dataFrame.loc[dataFrame[nombreColumna].str.contains(k), nombreColumna+'_desencode'] = v    
             
         
-    
     ##
     # Seleccionar fichero
     ##  
@@ -132,14 +135,27 @@ class MyApp(QMainWindow):
         return QFileDialog.getOpenFileName(qFD,"Seleccionar archivo", "",filtro)
     
     
+    
+    
+    
+    #---------------------------
+    #
+    #   FUNCIONES DE EVENTOS
+    #
+    #---------------------------
+    
     ##
-    # Carga el modelo
+    # Guardar el modelo
     ##
-    def cargarModelo(self):
-        archivo = self.seleccionarFichero('Modelo(*.sav)')[0]
-        if archivo:
-            self.ui.qLEModelo.setText(archivo)
+    def exportarModelo(self):
+        print('hola')
       
+    ##
+    # Predecir
+    ##
+    def predecirDataFrame(self):
+        print('hola')
+    
     ##
     # Guardar datos clasificados
     ##
@@ -150,6 +166,16 @@ class MyApp(QMainWindow):
         #Hacer un if para que ver que ha elegido el user
         #df_clasificado.to_csv(rutaElegida)
         #df_clasificado.to_excel?(rutaElegida)
+    
+    ##
+    # Carga el modelo
+    ##
+    def cargarModelo(self):
+        archivo = self.seleccionarFichero('Modelo(*.sav)')[0]
+        if archivo:
+            self.ui.qLEModelo.setText(archivo)
+      
+    
         
     ##
     # Carga el excel a predecir
