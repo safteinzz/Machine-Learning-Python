@@ -75,7 +75,8 @@ class MyApp(QMainWindow):
         
         # Exportar predicciones a excel
         self.ui.qPBExportar.clicked.connect(self.guardarDatos)  
-      
+    ##############################################################################################
+    #Fin de metodo      
         
     #---------------------------
     #
@@ -89,6 +90,8 @@ class MyApp(QMainWindow):
     ##     
     def encryptar(self, textoEncryptar):
         return str(int.from_bytes(textoEncryptar.encode('utf-8'), byteorder='big'))
+    ##############################################################################################
+    #Fin de metodo
     
     ##
     # 
@@ -100,6 +103,8 @@ class MyApp(QMainWindow):
             if ord(s[x]) != 0:
                 devolver += s[x]
         return devolver
+    ##############################################################################################
+    #Fin de metodo
     
     ##
     # 
@@ -122,6 +127,8 @@ class MyApp(QMainWindow):
             dataFrame.loc[dataFrame[nombreColumna].str.contains(k), nombreColumna+'_encode'] = v
         
         dataFrame.drop([nombreColumna], axis=1, inplace=True)
+    ##############################################################################################
+    #Fin de metodo
      
     ##
     # 
@@ -142,17 +149,12 @@ class MyApp(QMainWindow):
         # este valor se pondrá a partir del valor que hay en la columna
         for k, v in dictId.items():
             dataFrame.loc[dataFrame[nombreColumna].str.contains(k), nombreColumna+'_desencode'] = v    
-            
+    ##############################################################################################
+    #Fin de metodo          
         
-    ##
-    # Seleccionar fichero
-    ##  
-    def seleccionarFichero(self, filtro):
-        qFD = QFileDialog()        
-        return QFileDialog.getOpenFileName(qFD,"Seleccionar archivo", "",filtro)
+      
     
-    
-    
+
     
     
     #---------------------------
@@ -165,25 +167,32 @@ class MyApp(QMainWindow):
     # Guardar el modelo
     ##
     def exportarModelo(self):
-        print('hola')
+        print('sin hacer')
+    ##############################################################################################
+    #Fin de metodo        
       
     ##
     # Predecir
     ##
     def predecirDataFrame(self):
+        
+        #Sacar la ruta del fichero de datos que queire usar el user
         rutaPredecir = self.ui.qLEFicheroAClasificar.text()
 #        print(rutaPredecir)
         
+        #Sacar el modelo que ha elegido el user
         rutaModelo = self.ui.qLEModelo.text()
 #        print(rutaModelo)
         
         
-        
+        #Comprobar que tipo de fichero ha elegido el user
         if rutaPredecir.endswith('.xls'):
             df_entrenar = pd.read_excel(rutaPredecir)
         elif rutaPredecir.endswith('.csv'):
             df_entrenar = pd.read_csv(rutaPredecir)
         
+        
+        #esto de aqui abajo es lo mismo que hay en el otro, abria que hacer un metodo para no duplicarlo !!
         # eliminamos columna "nada" que no aporta al entrenamiento
         df_entrenar.drop(['nada'], axis=1, inplace=True)           
 
@@ -200,84 +209,93 @@ class MyApp(QMainWindow):
         self.encryptarColumna("airlane_name",df_entrenar)
         self.encryptarColumna("observations",df_entrenar)
         self.encryptarColumna("direccion_viento",df_entrenar)
-        self.encryptarColumna("direccion_racha",df_entrenar)
-        
-#        # Separamos columna con la info de salida_retrasada                        
-#        X =  np.array(df_entrenar.drop(['salida_retrasada'], 1)) # variables del modelo        
-#        Y =  np.array(df_entrenar['salida_retrasada']) # resultado
-#        # separamos datos en entrenamiento y prueba para testear algoritmos
-#        X_Train, X_Test, Y_Train, Y_Test = train_test_split(X, Y, test_size=0.2)
-        
-        
+        self.encryptarColumna("direccion_racha",df_entrenar)       
+       
+        #Cargar modelo en loader
         classifer = joblib.load(rutaModelo)
 #        classifer.fit(X_Train, Y_Train)
+        #Predecir el frame usando el modelo
         prediccion = classifer.predict(df_entrenar)
-        print(prediccion)
+#        print(prediccion)
         
+        #Cargar de nuevo el documento del usuario para mostrar la información bien
+        global df_p
         if rutaPredecir.endswith('.xls'):
             df_p = pd.read_excel(rutaPredecir)
         elif rutaPredecir.endswith('.csv'):
             df_p = pd.read_csv(rutaPredecir)
-            
-            
+        
+        #Quitar la columna salida retrasada
+        df_p.drop(['salida_retrasada'], axis=1, inplace=True)
+        
+        #Crear la columna prediccion que los datos de la prediccion
         df_p['Prediccion'] = prediccion
         
-#        df_entrenar['Prediccion'].replace(['1', '0'], ['Se retrasara','No se retrasara'], inplace=True)
+        #Hacer mas claro la columna prediccion al usuario
+        df_p['Prediccion'].replace([1, 0], ['Se retrasara','No se retrasara'], inplace=True)
+        
 #        # muestra de registros
 #        print ("=================================")
 #        print ("Muestra de registros")            
 #        print ("=================================")
 #        print (df_entrenar.head())  
-        df_p.drop(['salida_retrasada'], axis=1, inplace=True)
-        df_p['Prediccion'].replace([1, 0], ['Se retrasara','No se retrasara'], inplace=True)
+        
+        #Crear modelo para mostrar en la tabla
         p = PandasModel(df_p) 
         
-        # visualizar en ui.tableView
+        #Mostrar el modelo en la tabla
         self.ui.qTWVisualizacionPrediccion.setModel(p)
-        
-        
-#        loaded_model = pickle.load(open(rutaModelo, 'rb'))
-        
-#        # Separamos columna con la info de salida_retrasada                        
-#        X =  np.array(df_predecir.drop(['salida_retrasada'], 1)) # variables del modelo        
-#        Y =  np.array(df_predecir['salida_retrasada']) # resultado
-#        X_Train, X_Test, Y_Train, Y_Test = train_test_split(X, Y, test_size=0.2)
-        
-        
-#        result = loaded_model.score(X_Test, Y_Test)
-#        print(result)
-        
+    
+    ##############################################################################################
+    #Fin de metodo        
         
     ##
     # Guardar datos clasificados
     ##
     def guardarDatos(self):
-        print('Por hacer')
-        #Pedir al usuario que tipo quiere guardar csv o excel
-        #Pedir al usuario en que carpeta quiere guardarlo
-        #Hacer un if para que ver que ha elegido el user
-        #df_clasificado.to_csv(rutaElegida)
-        #df_clasificado.to_excel?(rutaElegida)
-    
+
+        #Comprobar que se haya hecho la prediccion
+        if not 'df_p' in globals():        
+            Messagebox('Primero debe hacer una predicción', 'Error', 1)     
+            return 
+        
+        #Si se ha hecho entonces se trae el dataframe
+        global df_p
+        
+        #Se le pide al usuario donde quiere guardar el archivo y de que tipo desea que sea
+        rutaGuardado = seleccionarFichero("xls(*.xls);;csv(*.csv)", 1)
+#        print(rutaGuardado)
+        Messagebox('Archivo exportado con exito', 'Error', 1)  
+        
+        #Se guarda
+        if rutaGuardado[1] == 'xls(*.xls)':
+            df_p.to_excel(rutaGuardado[0], sheet_name='Hoja 1', index=False)
+        else:
+            df_p.to_csv(rutaGuardado[0], index=False)      
+    ##############################################################################################
+    #Fin de metodo
+
     
     ##
     # Carga el modelo
     ##
     def cargarModelo(self):
-        archivo = self.seleccionarFichero('Modelo(*.pkl)')[0]
+        archivo = seleccionarFichero('Modelo(*.pkl)', 0)[0]
         if archivo:
             self.ui.qLEModelo.setText(archivo)
-          
+    ##############################################################################################
+    #Fin de metodo   
         
     ##
     # Carga el excel a predecir
     ##
     def cargarDatos_Clasificar(self):
-#        print (self.seleccionarFichero("xls(*.xls);;csv(*.csv)"))
-        archivo = self.seleccionarFichero("xls(*.xls);;csv(*.csv)")[0]
+#        print (seleccionarFichero("xls(*.xls);;csv(*.csv)"))
+        archivo = seleccionarFichero("xls(*.xls);;csv(*.csv)", 0)[0]
         if archivo:
             self.ui.qLEFicheroAClasificar.setText(archivo)
-       
+    ##############################################################################################
+    #Fin de metodo       
         
     ##
     # Guardar modelo
@@ -285,13 +303,14 @@ class MyApp(QMainWindow):
     def guardarModelo(self, nombre, dataFrame):
         filename = nombre + '.sav'
         pickle.dump(dataFrame, open(filename, 'wb'))
-        
+    ##############################################################################################
+    #Fin de metodo        
         
     ##
     # Carga del dataset de entrenamiento => dataframe
     ##
     def Cargadatos_Entrenar( self ):      
-        ficheroSeleccionado = self.seleccionarFichero("xls(*.xls);;csv(*.csv)")
+        ficheroSeleccionado = seleccionarFichero("xls(*.xls);;csv(*.csv)", 0)
         fileName = ficheroSeleccionado[0]
         if not fileName:
             Messagebox('Por favor, seleccione un fichero de entrenamiento', 'Error', 1)        
@@ -379,7 +398,8 @@ class MyApp(QMainWindow):
         global df_entrenar_global
         # asignamos a la variable global
         df_entrenar_global = df_entrenar            
-        
+    ##############################################################################################
+    #Fin de metodo        
         
     ##
     # Lanzar entrenamiento
@@ -456,24 +476,48 @@ class MyApp(QMainWindow):
         print(Y_pred)        
         
         print('\n\nEntrenamiento con ' + str_algoritmo + ' finalizado')        
-        
+    ##############################################################################################
+    #Fin de metodo        
+##############################################################################################
+#Fin de clase
             
-### OTRAS FUNCIONES
 
 ##
-## función Messagebox para alertas
+# función Messagebox para alertas
 ##
 def Messagebox(text, title, style):
     return ctypes.windll.user32.MessageBoxW(0, text, title, style)            
-            
+##############################################################################################
+#Fin de metodo
+    
 ##
-## Función MAIN
+# Seleccionar Ruta de fichero
+# @filtro => Sera el tipo de extension
+# @guardar => Booleano para saber si se quiere cargar o guardar
+#   - 1 = guardar
+#   - 0 = cargar
+##  
+def seleccionarFichero(filtro, guardar):
+    qFD = QFileDialog()
+    if guardar == 0:                    
+        return QFileDialog.getOpenFileName(qFD,"Seleccionar archivo", "",filtro)
+    elif guardar == 1:
+        return QFileDialog.getSaveFileName(qFD,"Seleccionar archivo", "",filtro)
+##############################################################################################
+#Fin de metodo  
+           
+##
+# Función MAIN
 ##
 def main():
     app = QApplication(sys.argv)
     window = MyApp()
     window.show()
     app.exec_()
+##############################################################################################
+#Fin de metodo
 
+
+## pythonlike
 if __name__ == '__main__':
     main()
