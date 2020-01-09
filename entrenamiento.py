@@ -10,6 +10,7 @@ import sys
 import numpy as np
 import pandas as pd
 
+
 # => import clase local
 from pandasmodel import PandasModel
 
@@ -34,6 +35,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 ## KNN - K Nearest Neighbors
 from sklearn.neighbors import KNeighborsClassifier
+
+import pickle
 
 ### Variables Globales ###
 df_entrenar_global = None
@@ -72,8 +75,55 @@ class MyApp(QMainWindow):
         # Exportar predicciones a excel
         self.ui.qPBExportar.clicked.connect(self.guardarDatos)  
       
-
+    def encryptar(self, textoEncryptar):
+        return str(int.from_bytes(textoEncryptar.encode('utf-8'), byteorder='big'))
+    
+    def desencryptar(self, textoDesencryptar):
+        s = int.to_bytes(int(textoDesencryptar), length=100, byteorder='big').decode('utf-8')
+        devolver = ""
+        for x in range(0,100):
+            if ord(s[x]) != 0:
+                devolver += s[x]
+        return devolver
+    
+    def encryptarColumna(self, nombreColumna, dataFrame):
+        # transforma los datos de la columna en una lista
+        listaString = dataFrame[nombreColumna].tolist()
+    
+        # crear dictionary vacío
+        dictId = {}
         
+        # recorremos la lista de antes agregandola en el dictionary y su valor sera el número en el que está situado en la lista
+        # si un valor se repite pondrá el último identificado obtenido
+        for i in range(len(listaString)):
+            dictId[listaString[i]] = self.encryptar(listaString[i])
+        
+        # recorremos el dictonary y agregamos una columna nueva '_encode' con el valor del identificador,
+        # este valor se pondrá a partir del valor que hay en la columna
+        for k, v in dictId.items():
+            dataFrame.loc[dataFrame[nombreColumna].str.contains(k), nombreColumna+'_encode'] = v
+        
+        dataFrame.drop([nombreColumna], axis=1, inplace=True)
+            
+    def desencryptarColumna(self, nombreColumna, dataFrame):
+        # transforma los datos de la columna en una lista
+        listaString = dataFrame[nombreColumna].tolist()
+    
+        # crear dictionary vacío
+        dictId = {}
+        
+        # recorremos la lista de antes agregandola en el dictionary y su valor sera el número en el que está situado en la lista
+        # si un valor se repite pondrá el último identificado obtenido
+        for i in range(len(listaString)):
+            dictId[listaString[i]] = self.desencryptar(listaString[i])
+        
+        # recorremos el dictonary y agregamos una columna nueva '_encode' con el valor del identificador,
+        # este valor se pondrá a partir del valor que hay en la columna
+        for k, v in dictId.items():
+            dataFrame.loc[dataFrame[nombreColumna].str.contains(k), nombreColumna+'_desencode'] = v    
+            
+        
+    
     ##
     # Seleccionar fichero
     ##  
@@ -86,7 +136,7 @@ class MyApp(QMainWindow):
     # Carga el modelo
     ##
     def cargarModelo(self):
-        archivo = self.seleccionarFichero()[0]
+        archivo = self.seleccionarFichero('Modelo(*.sav)')[0]
         if archivo:
             self.ui.qLEModelo.setText(archivo)
       
@@ -110,7 +160,9 @@ class MyApp(QMainWindow):
         if archivo:
             self.ui.qLEFicheroAClasificar.setText(archivo)
         
-
+    def guardarModelo(self, nombre, dataFrame):
+        filename = nombre + '.sav'
+        pickle.dump(dataFrame, open(filename, 'wb'))
     ##
     # Carga del dataset de entrenamiento => dataframe
     ##
@@ -171,7 +223,15 @@ class MyApp(QMainWindow):
         df_entrenar['salida_retrasada'].replace(['Y', 'N'], [1,0], inplace=True)
         
         # eliminamos columna "nada" que no aporta al entrenamiento
-        df_entrenar.drop(['nada'], axis=1, inplace=True)                                  
+        df_entrenar.drop(['nada'], axis=1, inplace=True)           
+
+        # eliminamos columna "nada" que no aporta al entrenamiento
+        df_entrenar.drop(['time_scheduled'], axis=1, inplace=True)     
+        # eliminamos columna "nada" que no aporta al entrenamiento
+        df_entrenar.drop(['time_departured'], axis=1, inplace=True)   
+        # eliminamos columna "nada" que no aporta al entrenamiento
+        df_entrenar.drop(['fecha_vuelo'], axis=1, inplace=True)   
+                         
                                 
         ############## dialogo
         
@@ -195,7 +255,8 @@ class MyApp(QMainWindow):
         global df_entrenar_global
         # asignamos a la variable global
         df_entrenar_global = df_entrenar            
-            
+        
+        
     ##
     # Lanzar entrenamiento
     ##
@@ -210,6 +271,16 @@ class MyApp(QMainWindow):
         global df_entrenar_global # indicamos que es la variable global                        
         # igualamos a la variable global
         df_entrenar =  df_entrenar_global        
+        
+        
+        self.encryptarColumna("flight_id",df_entrenar)
+        self.encryptarColumna("airport_name",df_entrenar)
+        self.encryptarColumna("destiny",df_entrenar)
+        self.encryptarColumna("airlane_name",df_entrenar)
+        self.encryptarColumna("observations",df_entrenar)
+        self.encryptarColumna("direccion_viento",df_entrenar)
+        self.encryptarColumna("direccion_racha",df_entrenar)
+        
         
         # Separamos columna con la info de salida_retrasada                        
         X =  np.array(df_entrenar.drop(['salida_retrasada'], 1)) # variables del modelo        
