@@ -37,6 +37,7 @@ from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 
 import pickle
+from sklearn.externals import joblib
 
 ### Variables Globales ###
 df_entrenar_global = None
@@ -76,12 +77,22 @@ class MyApp(QMainWindow):
         self.ui.qPBExportar.clicked.connect(self.guardarDatos)  
       
         
-        
+    #---------------------------
+    #
+    #   FUNCIONES GENERALES
+    #
+    #---------------------------    
     
-        
+    
+    ##
+    # 
+    ##     
     def encryptar(self, textoEncryptar):
         return str(int.from_bytes(textoEncryptar.encode('utf-8'), byteorder='big'))
     
+    ##
+    # 
+    ## 
     def desencryptar(self, textoDesencryptar):
         s = int.to_bytes(int(textoDesencryptar), length=100, byteorder='big').decode('utf-8')
         devolver = ""
@@ -90,6 +101,9 @@ class MyApp(QMainWindow):
                 devolver += s[x]
         return devolver
     
+    ##
+    # 
+    ## 
     def encryptarColumna(self, nombreColumna, dataFrame):
         # transforma los datos de la columna en una lista
         listaString = dataFrame[nombreColumna].tolist()
@@ -108,7 +122,10 @@ class MyApp(QMainWindow):
             dataFrame.loc[dataFrame[nombreColumna].str.contains(k), nombreColumna+'_encode'] = v
         
         dataFrame.drop([nombreColumna], axis=1, inplace=True)
-            
+     
+    ##
+    # 
+    ## 
     def desencryptarColumna(self, nombreColumna, dataFrame):
         # transforma los datos de la columna en una lista
         listaString = dataFrame[nombreColumna].tolist()
@@ -154,24 +171,83 @@ class MyApp(QMainWindow):
     # Predecir
     ##
     def predecirDataFrame(self):
-        rutaModelo = self.ui.qLEModelo.text()
-        print(rutaModelo)
         rutaPredecir = self.ui.qLEFicheroAClasificar.text()
-        print(rutaPredecir)
+#        print(rutaPredecir)
         
-        #comentario - definir problema - buscar tipo de archivo           
-        df_entrenar = pd.read_excel(rutaPredecir)
-        
-        loaded_model = pickle.load(open(rutaModelo, 'rb'))
-        
-        # Separamos columna con la info de salida_retrasada                        
-        X =  np.array(df_entrenar.drop(['salida_retrasada'], 1)) # variables del modelo        
-        Y =  np.array(df_entrenar['salida_retrasada']) # resultado
-        X_Train, X_Test, Y_Train, Y_Test = train_test_split(X, Y, test_size=0.2)
+        rutaModelo = self.ui.qLEModelo.text()
+#        print(rutaModelo)
         
         
-        result = loaded_model.score(X_Test, Y_Test)
-        print(result)
+        
+        if rutaPredecir.endswith('.xls'):
+            df_entrenar = pd.read_excel(rutaPredecir)
+        elif rutaPredecir.endswith('.csv'):
+            df_entrenar = pd.read_csv(rutaPredecir)
+        
+        # eliminamos columna "nada" que no aporta al entrenamiento
+        df_entrenar.drop(['nada'], axis=1, inplace=True)           
+
+        # eliminamos columna "nada" que no aporta al entrenamiento
+        df_entrenar.drop(['time_scheduled'], axis=1, inplace=True)     
+        # eliminamos columna "nada" que no aporta al entrenamiento
+        df_entrenar.drop(['time_departured'], axis=1, inplace=True)   
+        # eliminamos columna "nada" que no aporta al entrenamiento
+        df_entrenar.drop(['fecha_vuelo'], axis=1, inplace=True) 
+        df_entrenar.drop(['salida_retrasada'], axis=1, inplace=True)
+        self.encryptarColumna("flight_id",df_entrenar)
+        self.encryptarColumna("airport_name",df_entrenar)
+        self.encryptarColumna("destiny",df_entrenar)
+        self.encryptarColumna("airlane_name",df_entrenar)
+        self.encryptarColumna("observations",df_entrenar)
+        self.encryptarColumna("direccion_viento",df_entrenar)
+        self.encryptarColumna("direccion_racha",df_entrenar)
+        
+#        # Separamos columna con la info de salida_retrasada                        
+#        X =  np.array(df_entrenar.drop(['salida_retrasada'], 1)) # variables del modelo        
+#        Y =  np.array(df_entrenar['salida_retrasada']) # resultado
+#        # separamos datos en entrenamiento y prueba para testear algoritmos
+#        X_Train, X_Test, Y_Train, Y_Test = train_test_split(X, Y, test_size=0.2)
+        
+        
+        classifer = joblib.load(rutaModelo)
+#        classifer.fit(X_Train, Y_Train)
+        prediccion = classifer.predict(df_entrenar)
+        print(prediccion)
+        
+        if rutaPredecir.endswith('.xls'):
+            df_p = pd.read_excel(rutaPredecir)
+        elif rutaPredecir.endswith('.csv'):
+            df_p = pd.read_csv(rutaPredecir)
+            
+            
+        df_p['Prediccion'] = prediccion
+        
+#        df_entrenar['Prediccion'].replace(['1', '0'], ['Se retrasara','No se retrasara'], inplace=True)
+#        # muestra de registros
+#        print ("=================================")
+#        print ("Muestra de registros")            
+#        print ("=================================")
+#        print (df_entrenar.head())  
+        df_p.drop(['salida_retrasada'], axis=1, inplace=True)
+        df_p['Prediccion'].replace([1, 0], ['Se retrasara','No se retrasara'], inplace=True)
+        p = PandasModel(df_p) 
+        
+        # visualizar en ui.tableView
+        self.ui.qTWVisualizacionPrediccion.setModel(p)
+        
+        
+#        loaded_model = pickle.load(open(rutaModelo, 'rb'))
+        
+#        # Separamos columna con la info de salida_retrasada                        
+#        X =  np.array(df_predecir.drop(['salida_retrasada'], 1)) # variables del modelo        
+#        Y =  np.array(df_predecir['salida_retrasada']) # resultado
+#        X_Train, X_Test, Y_Train, Y_Test = train_test_split(X, Y, test_size=0.2)
+        
+        
+#        result = loaded_model.score(X_Test, Y_Test)
+#        print(result)
+        
+        
     ##
     # Guardar datos clasificados
     ##
@@ -183,15 +259,15 @@ class MyApp(QMainWindow):
         #df_clasificado.to_csv(rutaElegida)
         #df_clasificado.to_excel?(rutaElegida)
     
+    
     ##
     # Carga el modelo
     ##
     def cargarModelo(self):
-        archivo = self.seleccionarFichero('Modelo(*.sav)')[0]
+        archivo = self.seleccionarFichero('Modelo(*.pkl)')[0]
         if archivo:
             self.ui.qLEModelo.setText(archivo)
-      
-    
+          
         
     ##
     # Carga el excel a predecir
@@ -201,10 +277,16 @@ class MyApp(QMainWindow):
         archivo = self.seleccionarFichero("xls(*.xls);;csv(*.csv)")[0]
         if archivo:
             self.ui.qLEFicheroAClasificar.setText(archivo)
+       
         
+    ##
+    # Guardar modelo
+    ##
     def guardarModelo(self, nombre, dataFrame):
         filename = nombre + '.sav'
         pickle.dump(dataFrame, open(filename, 'wb'))
+        
+        
     ##
     # Carga del dataset de entrenamiento => dataframe
     ##
@@ -363,6 +445,7 @@ class MyApp(QMainWindow):
             # KNN - K Nearest Neighbors
             knn = KNeighborsClassifier(n_neighbors = 3)
             knn.fit(X_Train, Y_Train)
+            joblib.dump(knn, "model.pkl")
             Y_pred = knn.predict(X_Test)
             
             print('Precisión KNN')

@@ -279,7 +279,7 @@
       <bool>true</bool>
      </property>
      <property name="text">
-      <string>Visualización de entrenamiento</string>
+      <string>Matriz de confusion</string>
      </property>
     </widget>
     <widget class="QPushButton" name="qPBExportarModelo">
@@ -300,16 +300,6 @@
     <attribute name="title">
      <string>Prediccion</string>
     </attribute>
-    <widget class="QTableWidget" name="tableWidget">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>590</y>
-       <width>911</width>
-       <height>291</height>
-      </rect>
-     </property>
-    </widget>
     <widget class="QGroupBox" name="groupBox">
      <property name="geometry">
       <rect>
@@ -516,6 +506,19 @@
      </property>
      <property name="text">
       <string>Exportar</string>
+     </property>
+    </widget>
+    <widget class="QTableView" name="qTWVisualizacionPrediccion">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>600</y>
+       <width>911</width>
+       <height>281</height>
+      </rect>
+     </property>
+     <property name="gridStyle">
+      <enum>Qt::DashLine</enum>
      </property>
     </widget>
    </widget>
