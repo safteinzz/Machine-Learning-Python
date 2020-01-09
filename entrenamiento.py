@@ -154,8 +154,24 @@ class MyApp(QMainWindow):
     # Predecir
     ##
     def predecirDataFrame(self):
-        print('hola')
-    
+        rutaModelo = self.ui.qLEModelo.text()
+        print(rutaModelo)
+        rutaPredecir = self.ui.qLEFicheroAClasificar.text()
+        print(rutaPredecir)
+        
+        #comentario - definir problema - buscar tipo de archivo           
+        df_entrenar = pd.read_excel(rutaPredecir)
+        
+        loaded_model = pickle.load(open(rutaModelo, 'rb'))
+        
+        # Separamos columna con la info de salida_retrasada                        
+        X =  np.array(df_entrenar.drop(['salida_retrasada'], 1)) # variables del modelo        
+        Y =  np.array(df_entrenar['salida_retrasada']) # resultado
+        X_Train, X_Test, Y_Train, Y_Test = train_test_split(X, Y, test_size=0.2)
+        
+        
+        result = loaded_model.score(X_Test, Y_Test)
+        print(result)
     ##
     # Guardar datos clasificados
     ##
