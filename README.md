@@ -1,2 +1,2 @@
-# Proyecto-Computaci-n
+# Proyecto-Computación
 Proyecto de computación Ingenieria informatica
