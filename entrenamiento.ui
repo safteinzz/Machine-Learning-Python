@@ -74,7 +74,7 @@
       <rect>
        <x>10</x>
        <y>50</y>
-       <width>281</width>
+       <width>381</width>
        <height>31</height>
       </rect>
      </property>
@@ -91,14 +91,14 @@
     <widget class="QPushButton" name="excel_cargar_button">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>390</x>
        <y>50</y>
-       <width>75</width>
+       <width>201</width>
        <height>31</height>
       </rect>
      </property>
      <property name="text">
-      <string>cargar excel</string>
+      <string>Cargar dataset Entrenamiento</string>
      </property>
     </widget>
     <widget class="QRadioButton" name="rd_Algor_RL">
@@ -263,7 +263,7 @@
       <rect>
        <x>10</x>
        <y>640</y>
-       <width>201</width>
+       <width>751</width>
        <height>31</height>
       </rect>
      </property>
@@ -285,7 +285,7 @@
     <widget class="QPushButton" name="qPBExportarModelo">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>770</x>
        <y>640</y>
        <width>151</width>
        <height>31</height>

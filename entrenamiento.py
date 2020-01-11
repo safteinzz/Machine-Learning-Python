@@ -10,6 +10,8 @@ import sys
 import numpy as np
 import pandas as pd
 
+if sys.version_info.major == 3:
+    unicode = str
 
 # => import clase local
 from pandasmodel import PandasModel
@@ -35,12 +37,16 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 ## KNN - K Nearest Neighbors
 from sklearn.neighbors import KNeighborsClassifier
+## - Matriz de confusión, precision
+from sklearn.metrics import confusion_matrix, precision_score, recall_score, accuracy_score
 
 import pickle
 from sklearn.externals import joblib
 
 ### Variables Globales ###
 df_entrenar_global = None
+df_encrypted = None
+model_generated = None
 
 ### CUERPO DEL PROGRAMA ###
 
@@ -74,7 +80,7 @@ class MyApp(QMainWindow):
         self.ui.qPBPredecir.clicked.connect(self.predecirDataFrame)  
         
         # Exportar predicciones a excel
-        self.ui.qPBExportar.clicked.connect(self.guardarDatos)  
+        self.ui.qPBExportar.clicked.connect(self.guardarDatos)
     ##############################################################################################
     #Fin de metodo      
         
@@ -150,12 +156,7 @@ class MyApp(QMainWindow):
         for k, v in dictId.items():
             dataFrame.loc[dataFrame[nombreColumna].str.contains(k), nombreColumna+'_desencode'] = v    
     ##############################################################################################
-    #Fin de metodo          
-        
-      
-    
-
-    
+    #Fin de metodo    
     
     #---------------------------
     #
@@ -166,8 +167,23 @@ class MyApp(QMainWindow):
     ##
     # Guardar el modelo
     ##
-    def exportarModelo(self):
-        print('sin hacer')
+    def exportarModelo(self):       
+       
+       global model_generated
+       
+       if model_generated==None:
+           Messagebox('No se puede exportar porque no ha generado ningún modelo de entrenamiento', 'Error', 1)        
+           return 
+       
+       model = model_generated
+       
+       pkl_filename = "test_modelo.pkl"
+       with open(pkl_filename, 'wb') as file:
+           pickle.dump(model, file)
+           
+       Messagebox("Modelo exportado con éxito","Atención!!",1)
+        
+        
     ##############################################################################################
     #Fin de metodo        
       
@@ -182,20 +198,17 @@ class MyApp(QMainWindow):
         
         #Sacar el modelo que ha elegido el user
         rutaModelo = self.ui.qLEModelo.text()
-#        print(rutaModelo)
-        
+#        print(rutaModelo)        
         
         #Comprobar que tipo de fichero ha elegido el user
-        if rutaPredecir.endswith('.xls'):
+        if rutaPredecir.endswith('.xls') or rutaPredecir.endswith('.xlsx'):
             df_entrenar = pd.read_excel(rutaPredecir)
         elif rutaPredecir.endswith('.csv'):
-            df_entrenar = pd.read_csv(rutaPredecir)
-        
+            df_entrenar = pd.read_csv(rutaPredecir)        
         
         #esto de aqui abajo es lo mismo que hay en el otro, abria que hacer un metodo para no duplicarlo !!
         # eliminamos columna "nada" que no aporta al entrenamiento
         df_entrenar.drop(['nada'], axis=1, inplace=True)           
-
         # eliminamos columna "nada" que no aporta al entrenamiento
         df_entrenar.drop(['time_scheduled'], axis=1, inplace=True)     
         # eliminamos columna "nada" que no aporta al entrenamiento
@@ -256,7 +269,7 @@ class MyApp(QMainWindow):
 
         #Comprobar que se haya hecho la prediccion
         if not 'df_p' in globals():        
-            Messagebox('Primero debe hacer una predicción', 'Error', 1)     
+            Messagebox('Primero debe hacer una predicción', 'Atención!', 1)     
             return 
         
         #Si se ha hecho entonces se trae el dataframe
@@ -265,7 +278,7 @@ class MyApp(QMainWindow):
         #Se le pide al usuario donde quiere guardar el archivo y de que tipo desea que sea
         rutaGuardado = seleccionarFichero("xls(*.xls);;csv(*.csv)", 1)
 #        print(rutaGuardado)
-        Messagebox('Archivo exportado con exito', 'Error', 1)  
+        Messagebox('Archivo exportado con exito', 'OK', 1)  
         
         #Se guarda
         if rutaGuardado[1] == 'xls(*.xls)':
@@ -397,7 +410,21 @@ class MyApp(QMainWindow):
         # indicamos que es la variable global
         global df_entrenar_global
         # asignamos a la variable global
-        df_entrenar_global = df_entrenar            
+        df_entrenar_global = df_entrenar
+        
+        global df_encrypted
+        df_encrypted = df_entrenar
+        
+         # transformamos las columnas de formato str a numerico
+        self.encryptarColumna("flight_id",df_encrypted)
+        self.encryptarColumna("airport_name",df_encrypted)
+        self.encryptarColumna("destiny",df_encrypted)
+        self.encryptarColumna("airlane_name",df_encrypted)
+        self.encryptarColumna("observations",df_encrypted)
+        self.encryptarColumna("direccion_viento",df_encrypted)
+        self.encryptarColumna("direccion_racha",df_encrypted)
+
+         
     ##############################################################################################
     #Fin de metodo        
         
@@ -409,22 +436,11 @@ class MyApp(QMainWindow):
         # chequeamos que hemos seleccionado una opción => valorar combobox        
         if not self.ui.rd_Algor_RL.isChecked() and not self.ui.rd_Algor_SVM.isChecked() and not self.ui.rd_Algor_KNN.isChecked():                    
             Messagebox('No ha seleccionado ningún algoritmo', 'Error', 1)
-            return
-                                
-        ### Entrenamiento        
-        global df_entrenar_global # indicamos que es la variable global                        
-        # igualamos a la variable global
-        df_entrenar =  df_entrenar_global        
+            return                                
         
-        
-        self.encryptarColumna("flight_id",df_entrenar)
-        self.encryptarColumna("airport_name",df_entrenar)
-        self.encryptarColumna("destiny",df_entrenar)
-        self.encryptarColumna("airlane_name",df_entrenar)
-        self.encryptarColumna("observations",df_entrenar)
-        self.encryptarColumna("direccion_viento",df_entrenar)
-        self.encryptarColumna("direccion_racha",df_entrenar)
-        
+        global model_generated
+        global df_encrypted # pasado a global por problemas en encriptacion, comentar con P y S   
+        df_entrenar = df_encrypted
         
         # Separamos columna con la info de salida_retrasada                        
         X =  np.array(df_entrenar.drop(['salida_retrasada'], 1)) # variables del modelo        
@@ -433,33 +449,28 @@ class MyApp(QMainWindow):
         X_Train, X_Test, Y_Train, Y_Test = train_test_split(X, Y, test_size=0.2)
         
         Y_pred=0
-        str_algoritmo = ""        
+        str_algoritmo = ""
         
-        print('\nEntrenamiento lanzado')
-        
+        print('\nEntrenamiento lanzado')        
         
         if self.ui.rd_Algor_RL.isChecked():
             
             # Regresion logistica
             logreg = LogisticRegression()
             logreg.fit(X_Train, Y_Train)
-            Y_pred = logreg.predict(X_Test)            
+            Y_pred = logreg.predict(X_Test)                        
             
-            print('Precisión Regresión logística:')
-            
-            print(logreg.score(X_Train, Y_Train))            
+            model_generated=logreg            
             str_algoritmo="Logístic Regression"        
             
         elif self.ui.rd_Algor_SVM.isChecked():            
             # Support Vectors Machines
             svc = SVC()
             svc.fit(X_Train, Y_Train)
-            Y_pred = svc.predict(X_Test)
+            Y_pred = svc.predict(X_Test)            
             
-            print('Precisión SVM')
-            
-            print(svc.score(X_Train, Y_Train))            
-            str_algoritmo="SVM - Support Vectors Machine"
+            model_generated=svc
+            str_algoritmo="SVM - Support Vectors Machine"            
             
         elif self.ui.rd_Algor_KNN.isChecked():            
             # KNN - K Nearest Neighbors
@@ -467,15 +478,74 @@ class MyApp(QMainWindow):
             knn.fit(X_Train, Y_Train)
             joblib.dump(knn, "model.pkl")
             Y_pred = knn.predict(X_Test)
+                        
+            model_generated=knn
+            str_algoritmo="KNN - K Nearest Neighbors"
             
-            print('Precisión KNN')
-            
-            print(knn.score(X_Train, Y_Train))            
-            str_algoritmo="KNN - Logístic Regression"
+        print('\n\n############################################')
+
+        print('SCORE '+str_algoritmo)            
+        print(model_generated.score(X_Train, Y_Train))        
         
+        print('\n\nDatos predicción')
         print(Y_pred)        
+        print('\n\nEntrenamiento con ' + str_algoritmo + ' finalizado')       
+                          
+        print('\n\nMatriz de confusión')
         
-        print('\n\nEntrenamiento con ' + str_algoritmo + ' finalizado')        
+        c_matrix = confusion_matrix(Y_Test, Y_pred, labels=[1,0])                
+        tn, fp, fn, tp = confusion_matrix(Y_Test, Y_pred, labels=[1,0]).ravel()
+        
+        print(c_matrix)
+        print(tn, fp, fn, tp)
+        
+        print('\n\nAccuracy 1')
+        accuracy1 = accuracy_score(Y_Test, Y_pred)
+        print(accuracy1)
+        
+        print('\n\nAccuracy 2')      
+        accuracy2 = accuracy_score(Y_Test, Y_pred)
+        print(accuracy2)
+        
+        print('\n\nPrecision 1')                
+        precision1 = precision_score(Y_Test, Y_pred, average='micro')
+        print(precision1)
+        print('\n\nPrecision 2')
+        precision2 = precision_score(Y_Test, Y_pred, average='macro')
+        print(precision2)
+        
+        print('\n\nRecall 1')
+        recall1 = recall_score(Y_Test, Y_pred, average='micro')
+        print(recall1)
+        print('\n\nRecall 2')
+        recall2 = recall_score(Y_Test, Y_pred, average='macro')
+        print(recall2)                     
+
+        # montamos el dataframe de salida        
+        result = {'conceptos': ['pred. Y', 'pred N', 'class recall'],
+                  'trueY': [tp, fp, (tp/(tp+fp))*100],
+                  'trueN': [tn, fn, (tn/(tn+fn))*100],
+                  'ClassPrec': [(tp/(tp+tn))*100, (fp/(fp+fn))*100, '']          
+        }        
+  
+        df2show = pd.DataFrame(result, columns = ['conceptos', 'trueY', 'trueN', 'ClassPrec'])        
+        print('\n\resultado a mostrar')
+        print(df2show)        
+        
+        print('\n\n############################################')           
+        
+        #mostramos el algoritmo seleccionado en la etiqueta y el tableview
+        self.ui.qLVisualizacionEntrenamiento.setText('Matriz de confusión - algoritmo '+str_algoritmo)
+
+        # convertimos en modelo con clase PandasModel
+        model_matrix = PandasModel(df2show) 
+        
+        # visualizar en ui.tableView
+        self.ui.mitableView_resultados.setModel(model_matrix)
+        
+        Messagebox("Entrenamiento "+str_algoritmo+" finalizado con éxito", "Atención!!", 1)
+        
+        
     ##############################################################################################
     #Fin de metodo        
 ##############################################################################################
@@ -516,7 +586,7 @@ def main():
     app.exec_()
 ##############################################################################################
 #Fin de metodo
-
+  
 
 ## pythonlike
 if __name__ == '__main__':
