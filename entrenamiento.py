@@ -169,20 +169,28 @@ class MyApp(QMainWindow):
     ##
     def exportarModelo(self):       
        
-       global model_generated
+        global model_generated
        
-       if model_generated==None:
-           Messagebox('No se puede exportar porque no ha generado ningún modelo de entrenamiento', 'Error', 1)        
-           return 
+        if model_generated==None:
+            Messagebox('No se puede exportar porque no ha generado ningún modelo de entrenamiento', 'Error', 1)        
+            return 
        
-       model = model_generated
+        model = model_generated
        
-       pkl_filename = "test_modelo.pkl"
-       with open(pkl_filename, 'wb') as file:
-           pickle.dump(model, file)
+        #pkl_filename = "test_modelo.pkl"
+        #with open(pkl_filename, 'wb') as file:
+        #    pickle.dump(model, file)
            
-       Messagebox("Modelo exportado con éxito","Atención!!",1)
         
+       
+        #Se le pide al usuario donde quiere guardar el archivo y de que tipo desea que sea
+        rutaGuardado = seleccionarFichero("pkl(*.pkl)", 1)
+        #print(rutaGuardado[0])
+        Messagebox('Archivo exportado con exito', 'OK', 1)  
+        with open(rutaGuardado[0], 'wb') as file:
+            pickle.dump(model, rutaGuardado[0])
+            
+        Messagebox("Modelo exportado con éxito","Atención!!",1)
         
     ##############################################################################################
     #Fin de metodo        
@@ -381,11 +389,11 @@ class MyApp(QMainWindow):
         # eliminamos columna "nada" que no aporta al entrenamiento
         df_entrenar.drop(['nada'], axis=1, inplace=True)           
 
-        # eliminamos columna "nada" que no aporta al entrenamiento
+        # eliminamos columna "time_scheduled" que no aporta al entrenamiento
         df_entrenar.drop(['time_scheduled'], axis=1, inplace=True)     
-        # eliminamos columna "nada" que no aporta al entrenamiento
+        # eliminamos columna "time_departured" que no aporta al entrenamiento
         df_entrenar.drop(['time_departured'], axis=1, inplace=True)   
-        # eliminamos columna "nada" que no aporta al entrenamiento
+        # eliminamos columna "fecha_vuelo" que no aporta al entrenamiento
         df_entrenar.drop(['fecha_vuelo'], axis=1, inplace=True)   
                          
                                 
