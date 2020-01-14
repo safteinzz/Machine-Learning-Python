@@ -43,6 +43,10 @@ from sklearn.metrics import confusion_matrix, precision_score, recall_score, acc
 import pickle
 from sklearn.externals import joblib
 
+#Obtener fecha de creación de un archivo
+import os
+import datetime as dt
+
 ### Variables Globales ###
 df_entrenar_global = None
 df_encrypted = None
@@ -409,7 +413,13 @@ class MyApp(QMainWindow):
         dt_entrenar_info_string=""
         dt_entrenar_info_string+=" - Nº registros: " + str(df_entrenar.shape[0]) ## Gives no. of rows/records 
         dt_entrenar_info_string+="\n"
-        dt_entrenar_info_string+=" - Nº columnas: " + str(df_entrenar.shape[1]) ## Gives no. of columns 
+        dt_entrenar_info_string+=" - Nº columnas: " + str(df_entrenar.shape[1]) ## Gives no. of columns
+        
+        file_time = dt.datetime.fromtimestamp(os.path.getmtime(__file__))
+        dt_entrenar_info_string+="\n"
+        dt_entrenar_info_string+=" - F. creación: " + str(file_time.strftime("%d/%m/%Y %H:%M")) ## Gives no. of columns
+        #dt_entrenar_info_string+="\n"
+        #dt_entrenar_info_string+=" - Nombre del archivo: " + fileName
         dt_entrenar_info_string+="\n\n"
         dt_entrenar_info_string+="- Más info a poner"
         
