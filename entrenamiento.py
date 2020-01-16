@@ -94,6 +94,26 @@ class MyApp(QMainWindow):
     #
     #---------------------------    
     
+    ##
+    #   Funcion para limpiar dataframe de cosas que hacemos en ambos dataframe de entrenamiento y clasificacion
+    ##
+    def arreglarDF(self, dataFrame):
+        # eliminamos columna "nada" que no aporta al entrenamiento
+        dataFrame.drop(['nada'], axis=1, inplace=True)           
+        # eliminamos columna "nada" que no aporta al entrenamiento
+        dataFrame.drop(['time_scheduled'], axis=1, inplace=True)     
+        # eliminamos columna "nada" que no aporta al entrenamiento
+        dataFrame.drop(['time_departured'], axis=1, inplace=True)   
+        # eliminamos columna "nada" que no aporta al entrenamiento
+        dataFrame.drop(['fecha_vuelo'], axis=1, inplace=True)     
+        self.encryptarColumna("flight_id",dataFrame)
+        self.encryptarColumna("airport_name",dataFrame)
+        self.encryptarColumna("destiny",dataFrame)
+        self.encryptarColumna("airlane_name",dataFrame)
+        self.encryptarColumna("observations",dataFrame)
+        self.encryptarColumna("direccion_viento",dataFrame)
+        self.encryptarColumna("direccion_racha",dataFrame) 
+        return dataFrame
     
     ##
     # 
@@ -190,11 +210,11 @@ class MyApp(QMainWindow):
         #Se le pide al usuario donde quiere guardar el archivo y de que tipo desea que sea
         rutaGuardado = seleccionarFichero("pkl(*.pkl)", 1)
         #print(rutaGuardado[0])
-        Messagebox('Archivo exportado con exito', 'OK', 1)  
+        
         with open(rutaGuardado[0], 'wb') as file:
-            pickle.dump(model, rutaGuardado[0])
+            joblib.dump(model, rutaGuardado[0])
             
-        Messagebox("Modelo exportado con éxito","Atención!!",1)
+        Messagebox('Archivo exportado con exito', 'OK', 1)  
         
     ##############################################################################################
     #Fin de metodo        
@@ -203,44 +223,26 @@ class MyApp(QMainWindow):
     # Predecir
     ##
     def predecirDataFrame(self):
-        
+            
+        if not 'df_predecir' in globals():
+            Messagebox('Primero debe seleccionar un fichero', 'Atención!', 1)     
+            return 
+            
+        global df_predecir
         #Sacar la ruta del fichero de datos que queire usar el user
         rutaPredecir = self.ui.qLEFicheroAClasificar.text()
 #        print(rutaPredecir)
         
         #Sacar el modelo que ha elegido el user
         rutaModelo = self.ui.qLEModelo.text()
-#        print(rutaModelo)        
-        
-        #Comprobar que tipo de fichero ha elegido el user
-        if rutaPredecir.endswith('.xls') or rutaPredecir.endswith('.xlsx'):
-            df_entrenar = pd.read_excel(rutaPredecir)
-        elif rutaPredecir.endswith('.csv'):
-            df_entrenar = pd.read_csv(rutaPredecir)        
-        
-        #esto de aqui abajo es lo mismo que hay en el otro, abria que hacer un metodo para no duplicarlo !!
-        # eliminamos columna "nada" que no aporta al entrenamiento
-        df_entrenar.drop(['nada'], axis=1, inplace=True)           
-        # eliminamos columna "nada" que no aporta al entrenamiento
-        df_entrenar.drop(['time_scheduled'], axis=1, inplace=True)     
-        # eliminamos columna "nada" que no aporta al entrenamiento
-        df_entrenar.drop(['time_departured'], axis=1, inplace=True)   
-        # eliminamos columna "nada" que no aporta al entrenamiento
-        df_entrenar.drop(['fecha_vuelo'], axis=1, inplace=True) 
-        df_entrenar.drop(['salida_retrasada'], axis=1, inplace=True)
-        self.encryptarColumna("flight_id",df_entrenar)
-        self.encryptarColumna("airport_name",df_entrenar)
-        self.encryptarColumna("destiny",df_entrenar)
-        self.encryptarColumna("airlane_name",df_entrenar)
-        self.encryptarColumna("observations",df_entrenar)
-        self.encryptarColumna("direccion_viento",df_entrenar)
-        self.encryptarColumna("direccion_racha",df_entrenar)       
+#        print(rutaModelo)      
+            
        
         #Cargar modelo en loader
         classifer = joblib.load(rutaModelo)
 #        classifer.fit(X_Train, Y_Train)
         #Predecir el frame usando el modelo
-        prediccion = classifer.predict(df_entrenar)
+        prediccion = classifer.predict(df_predecir)
 #        print(prediccion)
         
         #Cargar de nuevo el documento del usuario para mostrar la información bien
@@ -317,8 +319,37 @@ class MyApp(QMainWindow):
     def cargarDatos_Clasificar(self):
 #        print (seleccionarFichero("xls(*.xls);;csv(*.csv)"))
         archivo = seleccionarFichero("xls(*.xls);;csv(*.csv)", 0)[0]
-        if archivo:
-            self.ui.qLEFicheroAClasificar.setText(archivo)
+        if not archivo:
+            Messagebox('Por favor, seleccione un fichero para su clasificacion', 'Error', 1)        
+            return 
+        
+        self.ui.qLEFicheroAClasificar.setText(archivo)
+        
+        global df_predecir
+        #Comprobar que tipo de fichero ha elegido el user
+        if archivo.endswith('.xls') or archivo.endswith('.xlsx'):
+            df_predecir = pd.read_excel(archivo)
+        elif archivo.endswith('.csv'):
+            df_predecir = pd.read_csv(archivo)        
+        
+        df_predecir = self.arreglarDF(df_predecir)
+        
+        df_predecir.drop(['salida_retrasada'], axis=1, inplace=True)
+        
+        # datos estadisticos dataframe
+        dt_predecir_info_string=""
+        dt_predecir_info_string+=" - Nº registros: " + str(df_predecir.shape[0]) ## Gives no. of rows/records 
+        dt_predecir_info_string+="\n"
+        dt_predecir_info_string+=" - Nº columnas: " + str(df_predecir.shape[1]) ## Gives no. of columns
+        
+        file_time = dt.datetime.fromtimestamp(os.path.getmtime(__file__))
+        dt_predecir_info_string+="\n"
+        dt_predecir_info_string+=" - F. creación: " + str(file_time.strftime("%d/%m/%Y %H:%M")) ## Gives no. of columns
+        #dt_entrenar_info_string+="\n"
+        #dt_entrenar_info_string+=" - Nombre del archivo: " + fileName
+        dt_predecir_info_string+="\n\n"
+        
+        self.ui.qLDatosModelo.setText(dt_predecir_info_string)
     ##############################################################################################
     #Fin de metodo       
         
@@ -390,15 +421,7 @@ class MyApp(QMainWindow):
         # transformos campo label de texto a numerico            
         df_entrenar['salida_retrasada'].replace(['Y', 'N'], [1,0], inplace=True)
         
-        # eliminamos columna "nada" que no aporta al entrenamiento
-        df_entrenar.drop(['nada'], axis=1, inplace=True)           
-
-        # eliminamos columna "time_scheduled" que no aporta al entrenamiento
-        df_entrenar.drop(['time_scheduled'], axis=1, inplace=True)     
-        # eliminamos columna "time_departured" que no aporta al entrenamiento
-        df_entrenar.drop(['time_departured'], axis=1, inplace=True)   
-        # eliminamos columna "fecha_vuelo" que no aporta al entrenamiento
-        df_entrenar.drop(['fecha_vuelo'], axis=1, inplace=True)   
+        df_entrenar = self.arreglarDF(df_entrenar)
                          
                                 
         ############## dialogo
@@ -420,8 +443,6 @@ class MyApp(QMainWindow):
         dt_entrenar_info_string+=" - F. creación: " + str(file_time.strftime("%d/%m/%Y %H:%M")) ## Gives no. of columns
         #dt_entrenar_info_string+="\n"
         #dt_entrenar_info_string+=" - Nombre del archivo: " + fileName
-        dt_entrenar_info_string+="\n\n"
-        dt_entrenar_info_string+="- Más info a poner"
         
         self.ui.label_Info.setText(dt_entrenar_info_string)
             
@@ -433,14 +454,7 @@ class MyApp(QMainWindow):
         global df_encrypted
         df_encrypted = df_entrenar
         
-         # transformamos las columnas de formato str a numerico
-        self.encryptarColumna("flight_id",df_encrypted)
-        self.encryptarColumna("airport_name",df_encrypted)
-        self.encryptarColumna("destiny",df_encrypted)
-        self.encryptarColumna("airlane_name",df_encrypted)
-        self.encryptarColumna("observations",df_encrypted)
-        self.encryptarColumna("direccion_viento",df_encrypted)
-        self.encryptarColumna("direccion_racha",df_encrypted)
+        
 
          
     ##############################################################################################
@@ -494,7 +508,7 @@ class MyApp(QMainWindow):
             # KNN - K Nearest Neighbors
             knn = KNeighborsClassifier(n_neighbors = 3)
             knn.fit(X_Train, Y_Train)
-            joblib.dump(knn, "model.pkl")
+            
             Y_pred = knn.predict(X_Test)
                         
             model_generated=knn

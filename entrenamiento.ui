@@ -35,7 +35,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tabEntrenamiento">
     <attribute name="title">
@@ -345,7 +345,7 @@
        </font>
       </property>
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;justify&quot;&gt;Ejemplo de uso: ejemplo de uso&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;Ejemplo de uso: ejemplo de uso&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;Ejemplo de uso: ejemplo de uso&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;Ejemplo de uso: ejemplo de uso&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;Ejemplo de uso: ejemplo de uso&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;Ejemplo de uso: ejemplo de uso&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string/>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
