@@ -327,7 +327,7 @@
       </font>
      </property>
      <property name="title">
-      <string>Datos del modelo</string>
+      <string>Datos del Fichero</string>
      </property>
      <widget class="QLabel" name="qLDatosModelo">
       <property name="geometry">

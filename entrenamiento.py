@@ -114,9 +114,11 @@ class MyApp(QMainWindow):
         self.encryptarColumna("direccion_viento",dataFrame)
         self.encryptarColumna("direccion_racha",dataFrame) 
         return dataFrame
+    ##############################################################################################
+    #Fin de metodo
     
     ##
-    # 
+    #   Encriptar campos string para poder darselos al algoritmo
     ##     
     def encryptar(self, textoEncryptar):
         return str(int.from_bytes(textoEncryptar.encode('utf-8'), byteorder='big'))
@@ -124,7 +126,7 @@ class MyApp(QMainWindow):
     #Fin de metodo
     
     ##
-    # 
+    #   Metodo para desencriptar datos (Actualmente no se usa)
     ## 
     def desencryptar(self, textoDesencryptar):
         s = int.to_bytes(int(textoDesencryptar), length=100, byteorder='big').decode('utf-8')
@@ -137,7 +139,7 @@ class MyApp(QMainWindow):
     #Fin de metodo
     
     ##
-    # 
+    #   Metodo para encriptar columnas
     ## 
     def encryptarColumna(self, nombreColumna, dataFrame):
         # transforma los datos de la columna en una lista
@@ -161,7 +163,7 @@ class MyApp(QMainWindow):
     #Fin de metodo
      
     ##
-    # 
+    #   Metodo para descencriptar columna (Actualmente no se usa)
     ## 
     def desencryptarColumna(self, nombreColumna, dataFrame):
         # transforma los datos de la columna en una lista
@@ -189,7 +191,7 @@ class MyApp(QMainWindow):
     #---------------------------
     
     ##
-    # Guardar el modelo
+    # Guardar el modelo como archivo pkl utilizando joblib
     ##
     def exportarModelo(self):       
        
@@ -220,23 +222,32 @@ class MyApp(QMainWindow):
     #Fin de metodo        
       
     ##
-    # Predecir
+    # 
     ##
     def predecirDataFrame(self):
             
+        #Sacar la ruta del fichero de datos que queire usar el user
+        rutaPredecir = self.ui.qLEFicheroAClasificar.text()
+#        print(rutaPredecir)        
+        #Sacar el modelo que ha elegido el user
+        rutaModelo = self.ui.qLEModelo.text()
+#        print(rutaModelo) 
+        
+        if not rutaModelo:
+            Messagebox('Debe seleccionar un modelo', 'Atención!', 1)     
+            return
+        if not rutaPredecir:
+            Messagebox('Debe seleccionar un fichero', 'Atención!', 1) 
+            return
+        
         if not 'df_predecir' in globals():
-            Messagebox('Primero debe seleccionar un fichero', 'Atención!', 1)     
+            Messagebox('Excepcion, no exite el dataframe', 'Debug', 1)
             return 
             
         global df_predecir
-        #Sacar la ruta del fichero de datos que queire usar el user
-        rutaPredecir = self.ui.qLEFicheroAClasificar.text()
-#        print(rutaPredecir)
         
-        #Sacar el modelo que ha elegido el user
-        rutaModelo = self.ui.qLEModelo.text()
-#        print(rutaModelo)      
-            
+           
+        
        
         #Cargar modelo en loader
         classifer = joblib.load(rutaModelo)
@@ -468,7 +479,12 @@ class MyApp(QMainWindow):
         # chequeamos que hemos seleccionado una opción => valorar combobox        
         if not self.ui.rd_Algor_RL.isChecked() and not self.ui.rd_Algor_SVM.isChecked() and not self.ui.rd_Algor_KNN.isChecked():                    
             Messagebox('No ha seleccionado ningún algoritmo', 'Error', 1)
-            return                                
+            return      
+             
+        
+        if not self.ui.fichEntrenamiento_txt.text():
+            Messagebox('Debe seleccionar un Fichero', 'Atención!', 1)     
+            return                     
         
         global model_generated
         global df_encrypted # pasado a global por problemas en encriptacion, comentar con P y S   
