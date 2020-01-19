@@ -35,11 +35,11 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tabEntrenamiento">
     <attribute name="title">
-     <string>Entrenamiento</string>
+     <string>ENTRENAMIENTO</string>
     </attribute>
     <widget class="QTableView" name="mitableView_resultados">
      <property name="geometry">
@@ -86,7 +86,7 @@
       <rect>
        <x>10</x>
        <y>50</y>
-       <width>381</width>
+       <width>601</width>
        <height>31</height>
       </rect>
      </property>
@@ -103,7 +103,7 @@
     <widget class="QPushButton" name="excel_cargar_button">
      <property name="geometry">
       <rect>
-       <x>390</x>
+       <x>610</x>
        <y>50</y>
        <width>201</width>
        <height>31</height>
@@ -310,7 +310,7 @@
    </widget>
    <widget class="QWidget" name="tabPrediccion">
     <attribute name="title">
-     <string>Prediccion</string>
+     <string>PREDICCIÓN</string>
     </attribute>
     <widget class="QGroupBox" name="groupBox">
      <property name="geometry">
@@ -384,7 +384,7 @@
       <rect>
        <x>10</x>
        <y>60</y>
-       <width>281</width>
+       <width>531</width>
        <height>31</height>
       </rect>
      </property>
@@ -401,7 +401,7 @@
     <widget class="QPushButton" name="qPBSelectFicheroAClasificar">
      <property name="geometry">
       <rect>
-       <x>300</x>
+       <x>540</x>
        <y>60</y>
        <width>75</width>
        <height>31</height>
@@ -419,7 +419,7 @@
       <rect>
        <x>10</x>
        <y>160</y>
-       <width>281</width>
+       <width>531</width>
        <height>31</height>
       </rect>
      </property>
@@ -460,7 +460,7 @@
     <widget class="QPushButton" name="qPBSeleccionarModelo">
      <property name="geometry">
       <rect>
-       <x>300</x>
+       <x>540</x>
        <y>160</y>
        <width>75</width>
        <height>31</height>

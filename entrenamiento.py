@@ -241,12 +241,10 @@ class MyApp(QMainWindow):
             return
         
         if not 'df_predecir' in globals():
-            Messagebox('Excepcion, no exite el dataframe', 'Debug', 1)
+            Messagebox('Excepcion, no existe el dataframe', 'Debug', 1)
             return 
             
-        global df_predecir
-        
-           
+        global df_predecir           
         
        
         #Cargar modelo en loader
@@ -283,6 +281,8 @@ class MyApp(QMainWindow):
         
         #Mostrar el modelo en la tabla
         self.ui.qTWVisualizacionPrediccion.setModel(p)
+        
+        Messagebox('Predicción finalizada con éxito!', 'Atención!', 1)
     
     ##############################################################################################
     #Fin de metodo        
